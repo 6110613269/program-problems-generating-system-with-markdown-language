@@ -1,0 +1,17 @@
+{% extends "QuestionElab/layout.html" %}
+{% load static %}
+{% block body %}
+<div class="col" style="border: #dfdbdb 1px solid; margin:5px; border-radius: 6px">
+    {% if resultcode %}
+    <div style='color:green; margin:10px; border: 1px;'>{{ resultcode |safe }} </div>
+    {% endif %}
+    {% if resultinput %}
+    <div style='border: 1px dotted; background: #d3dce6;  padding:5px; margin:20px;'>{{ resultinput |safe }} </div>
+    {% endif %}
+    
+</div>
+<div class="row" style="margin:20px">
+    <span> Answer: </span>
+    <textarea name="source" class="form-control" style="height: 200px" id="outputArea"></textarea>
+</div>
+{%endblock%}

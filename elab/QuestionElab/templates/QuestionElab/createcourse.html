@@ -1,0 +1,21 @@
+{% extends "QuestionElab/layout.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block body %}
+
+<div class="createcourse">
+   <form action="{% url 'savecourse'%}" method="POST">
+        {% csrf_token %}
+        <h3>Course Name</h3>
+        <input type="text"  name="coursename"><br><br>
+        <h3>Description</h3>
+        <textarea name="description" rows="4" cols="50"></textarea><br><br>
+        <button type="submit" class="btn btn-primary">Create Course</button>
+    </form>
+</div>
+<style>
+    .createcourse{
+        padding-left: 20px;
+    }
+</style>
+{% endblock %}

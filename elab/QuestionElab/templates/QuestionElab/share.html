@@ -1,0 +1,119 @@
+{% extends "QuestionElab/layoutshare.html" %}
+{% load static %}
+{% block body %}
+
+<script>
+    var position;
+ 
+     function getCaretPosition() {
+         var ctlTextArea = document.getElementById('textArea');
+         position = ctlTextArea.selectionStart;
+         return position;
+     }
+ 
+     /* Needs JQuery */
+     $(document).ready(function () {
+ 
+         jQuery.fn.extend({
+             insertAtCaret: function (myValue) {
+                 return this.each(function (i) {
+                     if (document.selection) {
+                         //For browsers like Internet Explorer
+                         this.focus();
+                         sel = document.selection.createRange();
+                         sel.text = myValue;
+                         this.focus();
+                     }
+                     else if (this.selectionStart || this.selectionStart == '0') {
+                         //For browsers like Firefox and Webkit based
+                         var startPos = this.selectionStart;
+                         var endPos = this.selectionEnd;
+                         var scrollTop = this.scrollTop;
+                         this.value = this.value.substring(0, startPos) + myValue + this.value.substring(endPos, this.value.length);
+                         this.focus();
+                         this.selectionStart = startPos + myValue.length;
+                         this.selectionEnd = startPos + myValue.length;
+                         this.scrollTop = scrollTop;
+                     } else {
+                         this.value += myValue;
+                         this.focus();
+                     }
+                 })
+             }
+         });
+        document.getElementById('textArea').addEventListener('keydown', function(e) {
+            if (e.key == 'Tab') {
+                e.preventDefault();
+                var start = this.selectionStart;
+                var end = this.selectionEnd;
+
+                // set textarea value to: text before caret + tab + text after caret
+                this.value = this.value.substring(0, start) +
+                "\t" + this.value.substring(end);
+
+                // put caret at right position again
+                this.selectionStart =
+                this.selectionEnd = start + 1;
+            }
+        });
+    });
+</script>
+
+<div class="header">
+    <img src="static/assets/img/Logo_ECE.png" style="width:350px; " >
+</div>
+<div class="container-fluid">
+    <br>
+    <form action="" method="post" target="_blank">
+        {% csrf_token %}
+            <div class="card" style="width:100%">
+                {{obj.question_name}}
+                <div class="col" style="border: #dfdbdb 1px solid; margin:5px; border-radius: 6px">
+                    {% if resultmarkdown %}
+                    <div> {{resultmarkdown |safe}} </div>
+                    {% endif %}
+                    {% if resultinput %}
+                    <div> input: </div>
+                    <div style='color:green; margin:10px; border: 1px;'>{{ resultinput |safe }} </div>
+                    {% endif %}
+                    {% if resultmarkdownbetween %}
+                    <div> {{resultmarkdownbetween |safe}} </div>
+                    {% endif %}
+                    {% if resultoutput %}
+                    <div> output: </div>
+                    <div style='border: 1px dotted; background: #d3dce6;  padding:5px; margin:20px;'>{{ resultoutput |safe }} </div>
+                    {% endif %}
+                    {% if resultmarkdownlast %}
+                    <div> {{resultmarkdownlast |safe}} </div>
+                    {% endif %}
+                    
+                    
+                </div>
+                <div class="row" style="margin:20px">
+                    <span> Answer: </span>
+                    <textarea name="answer" class="form-control" style="height: 200px" id="textArea"></textarea>
+                    
+                </div>
+                <div class="card-footer">
+                    
+                    <div class="justify-content-between float-right">
+                        {% comment %} <a href="{% url 'check' %}" class="btn btn-success" target="_blank" >check</a> {% endcomment %}
+                        <button type="submit" class="btn btn-primary text-xs" name="check">check</button>
+                        <button type="submit" class="btn btn-success text-xs" name="api">API</button>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </form>
+        {% if messages %}
+        <!-- <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}         -->
+</div>
+
+
+{%endblock%}

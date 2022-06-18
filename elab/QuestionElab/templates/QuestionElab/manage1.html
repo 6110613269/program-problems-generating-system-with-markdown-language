@@ -1,0 +1,98 @@
+{% extends "QuestionElab/layout.html" %}
+{% load static %}
+{% load django_tables2 %}
+{% block body %}
+{% block table-wrapper %}
+{% block table %}
+        <table {% render_attrs table.attrs class="table" %}>
+            {% block table.thead %}
+            {% if table.show_header %}
+                <thead {{ table.attrs.thead.as_html }}>
+                <tr>
+                {% for column in table.columns %}
+                    <th {{ column.attrs.th.as_html }}>
+                        {% if column.orderable %}
+                            <a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a>
+                        {% else %}
+                            {{ column.header }}
+                        {% endif %}
+                    </th>
+                {% endfor %}
+                </tr>
+                </thead>
+            {% endif %}
+            {% endblock table.thead %}
+            {% block table.tbody %}
+                <tbody {{ table.attrs.tbody.as_html }}>
+                {% for row in table.paginated_rows %}
+                    {% block table.tbody.row %}
+                    <tr {{ row.attrs.as_html }}>
+                        {% for column, cell in row.items %}
+                            <td {{ column.attrs.td.as_html }}>{% if column.localize == None %}{{ cell }}{% else %}{% if column.localize %}{{ cell|localize }}{% else %}{{ cell|unlocalize }}{% endif %}{% endif %}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endblock table.tbody.row %}
+                {% empty %}
+                    {% if table.empty_text %}
+                    {% block table.tbody.empty_text %}
+                        <tr><td colspan="{{ table.columns|length }}">{{ table.empty_text }}</td></tr>
+                    {% endblock table.tbody.empty_text %}
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            {% endblock table.tbody %}
+            {% block table.tfoot %}
+            {% if table.has_footer %}
+            <tfoot {{ table.attrs.tfoot.as_html }}>
+                <tr>
+                {% for column in table.columns %}
+                    <td {{ column.attrs.tf.as_html }}>{{ column.footer }}</td>
+                {% endfor %}
+                </tr>
+            </tfoot>
+            {% endif %}
+            {% endblock table.tfoot %}
+        </table>
+    {% endblock table %}
+    {% endblock table-wrapper %}
+        {% comment %} <div class="row">
+            <div class="col-md-8">
+                <h3>คอร์สทั้งหมด</h3>
+            </div>
+        </div>
+        {% if course %}
+        <div style="float: right; margin-left: 270px;">
+            <a href="{% url 'eachcourse' course.id %}" id="share_button_id" class="btn btn-outline-secondary">แชร์</a>
+        </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-sm-3" style="position: sticky; height: calc(100vh - 15rem);">
+                <div id="post_list_group_id" class="list-group">
+                    <!--{%if allcourse%}-->
+                    {% for i in allcourse %}
+
+
+                    <a href="#" class="list-group-item list-group-item-action "
+                    data-toggle="list">{{i.course_name}}</a>
+
+                    {% endfor %}
+                    <!--{% endif %}-->
+                </div>
+                <a href="{% url 'createcourse' %}" class="btn btn-success btn-block mt-2">สร้างคอร์สเรียนใหม่</a>
+
+            </div>
+            
+
+            <div class="mx-auto w-50 mx-auto mb-2 textform">
+                <h3>Course : {{course.name}}</h3>
+            </div>
+
+        </div> {% endcomment %}
+
+
+
+    </div>
+
+
+{% endblock %}

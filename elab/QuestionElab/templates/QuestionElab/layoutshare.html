@@ -1,0 +1,76 @@
+{% load static %}
+{% load sass_tags %}
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>ELAB</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% sass_src 'scss/main.scss' %}" type="text/css">
+  
+  <!-- Favicon-->
+        <!--<link rel="icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}" />-->
+        
+
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v5.15.1/js/all.js" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css" />
+        <!-- Third party plugin CSS-->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" rel="stylesheet" />
+        
+</head>
+
+<body background="static/assets/img/bg.png">
+  {% comment %} style="background:#E25757" {% endcomment %}
+    
+  <div class="containers" >
+
+    
+      
+      <!-- card -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} m-2" id="msg" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %} 
+      <div class="cardBox">
+        {%block body%}
+        {%endblock%}
+       
+
+      </div>
+     
+
+    
+  </div>
+  {% comment %} <footer class="text-xs" style="position: fixed; padding: 10px 10px 0px 30px; bottom: 0;width: 100%; height:150px " >
+    
+    <img src="static/assets/img/TU.png" style="width:100px; ">
+    <strong>Copyright &copy; 2022 <a href="https://www.reg.tu.ac.th/" target="_blank">reg.tu</a>.</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+    {% comment %} <b>Version</b> 1.0.0 {% endcomment %}
+    {% comment %} </div>
+    </footer> {% endcomment %}
+
+
+<script>
+  setTimeout(function(){
+    if ($('#msg').length > 0) {
+      $('#msg').remove();
+    }
+  }, 2000)
+</script>
+  
+</body>
+
+</html>

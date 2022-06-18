@@ -1,0 +1,50 @@
+{% extends "QuestionElab/layout.html" %}
+{% load static %}
+{% block body %}
+<div class="container-fluid">
+  <div class="row">
+      <div class="card" style="width:100%">
+        <div style="float:right; margin-top:-10px">
+          <form class="form-inline mr-auto my-lg-0" action="{% url 'searcheachquestion' %}" method="POST"> 
+            {% csrf_token %}
+            <input class="form-control mr-sm-2" id="searchbar" name="searcheachquestion" type="search" placeholder="Search"aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0" id="searchbotton" type="submit" style="margin-right:20px;"><i class="fa fa-search" aria-hidden="true"></i></button>
+          </form>
+        </div>
+        <br>
+
+        <table class="table mb-0">
+            <thead>
+              <tr>
+                <th >Question</th>
+                <th style="text-align:center" width:100px>Language</th>
+                <th style="text-align:center" width:100px>Share </th>
+                <th style="text-align:center" width:100px>Edit </th>
+                <th style="text-align:center" width:100px>Delete  </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for s in tables %}
+              <tr>
+                  <td>{{ s.question_name }}</td>
+                  <td style="text-align:center">{{ s.question_language }}</td>
+                  <td style="text-align:center">
+                    <a href="{% url 'share' s.question_token %}" class="btn btn-success" target="_blank" >Share</a>
+                  </td>
+                  <td style="text-align:center">
+                    <a href="{% url 'editquestion' s.question_token %}" class="btn btn-info" target="_blank" >Edit</a>
+                  </td>
+                  <td style="text-align:center">
+                    <a href="{% url 'delete' s.id %}" class="btn btn-danger" >Delete</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,236 @@
+{% extends "QuestionElab/layout.html" %}
+{% load static %}
+{% block body %}
+<head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+</head>
+<script>
+   var position;
+
+    function getCaretPosition() {
+        var ctlTextArea = document.getElementById('textArea');
+        position = ctlTextArea.selectionStart;
+        return position;
+    }
+
+	/* Needs JQuery */
+    $(document).ready(function () {
+
+        jQuery.fn.extend({
+            insertAtCaret: function (myValue) {
+                return this.each(function (i) {
+                    if (document.selection) {
+                        //For browsers like Internet Explorer
+                        this.focus();
+                        sel = document.selection.createRange();
+                        sel.text = myValue;
+                        this.focus();
+                    }
+                    else if (this.selectionStart || this.selectionStart == '0') {
+                        //For browsers like Firefox and Webkit based
+                        var startPos = this.selectionStart;
+                        var endPos = this.selectionEnd;
+                        var scrollTop = this.scrollTop;
+                        this.value = this.value.substring(0, startPos) + myValue + this.value.substring(endPos, this.value.length);
+                        this.focus();
+                        this.selectionStart = startPos + myValue.length;
+                        this.selectionEnd = startPos + myValue.length;
+                        this.scrollTop = scrollTop;
+                    } else {
+                        this.value += myValue;
+                        this.focus();
+                    }
+                })
+            }
+        });
+
+        
+        $('#addcode').click(function () {
+            $("#textArea").insertAtCaret("::start-code::\n\n::end-code::" );
+        });
+        $('#addtest').click(function () {
+            $("#textArea").insertAtCaret("::start-input::\n\n::end-input::");
+        });
+        $('#addoutput').click(function () {
+            $("#textArea").insertAtCaret("::start-output::\n\n::end-output::");
+        });
+
+        document.getElementById('textArea').addEventListener('keydown', function(e) {
+            if (e.key == 'Tab') {
+                e.preventDefault();
+                var start = this.selectionStart;
+                var end = this.selectionEnd;
+
+                // set textarea value to: text before caret + tab + text after caret
+                this.value = this.value.substring(0, start) +
+                "\t" + this.value.substring(end);
+
+                // put caret at right position again
+                this.selectionStart =
+                this.selectionEnd = start + 1;
+            }
+        });
+    });
+
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#checkBtn').click(function() {
+          checked = $("input[type=checkbox]:checked").length;
+    
+          if(!checked) {
+            alert("You must check at least one checkbox.");
+            return false;
+          }
+    
+        });
+    });
+    
+    </script>
+<!--<div class="container">-->
+    <!--<div class="row">-->
+<form action="" method="post">
+    {% csrf_token %}
+    <div class="container-fluid">
+        {% if user.is_authenticated %}
+        <div class="row">
+            <div class="card" style="width:100%">
+                <div class="card-header">Taskpads</div>
+                <div class="card-body">
+                    <div class="col">
+
+                        <div class="form-inline" style="margin-bottom: 5px;">
+                            <span style="margin-right: 15px;">ชื่อโจทย์โปรแกรม </span>
+                            <input name="Qname" value="{{ Qname }}" required></input>
+                        </div>
+                        <div class="form-inline" style="margin-bottom: 5px;">
+                            <span style="margin-right: 15px;">ภาษาโปรแกรม </span>
+                            <select name="Qlanguage" value="{{ Qlanguage }}" class="form-select" aria-label="Default select example">
+                                {% comment %} <option selected>------</option> {% endcomment %}
+                                <option value="python" {% if Qlanguage == 'python' %} selected {% endif %}>Python</option>
+                                <option value="java" {% if Qlanguage == 'java' %} selected {% endif %}>Java</option>
+                                <option value="c" {% if Qlanguage == 'c' %} selected {% endif %}>C</option>
+                            </select>
+                        </div>
+                        {% comment %} <div class="form-inline" style="margin-bottom: 5px;">
+                            <span style="margin-right: 15px;">เงื่อนไขการตรวจ </span>
+                            <select name="Qcondition" value="{{ Qcondition }}" class="form-select" aria-label="Default select example">
+                                <option value="exact-macth" {% if Qcondition == 'exact-macth' %} selected {% endif %}>exact-macth</option>
+                                <option value="ignore-space" {% if Qcondition == 'ignore-space' %} selected {% endif %}>ignore-space</option>
+                                <option value="sensitive" {% if Qcondition == 'sensitive' %} selected {% endif %}>sensitive</option>
+                                <option value="insensitive" {% if Qcondition == 'insensitive' %} selected {% endif %}>insensitive</option>
+                            </select>
+                        </div> {% endcomment %}
+                        <div class="form-inline" style="margin-bottom: 5px;" >
+                            <span style="margin-right: 15px;">เงื่อนไขการตรวจ </span>
+                            <div class="form-check" >
+                                <input class="form-check-input" type="checkbox" value="exactmacth" id="exactmacth" name="Qcondition" {% if exactmacth %} checked {% endif %} >
+                                <label class="form-check-label" for="exactmacth">exact-macth</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="ignorespace" id="ignorespace" name="Qcondition" {% if ignorespace %} checked {% endif %} >
+                                <label class="form-check-label" for="ignorespace">ignore-space</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="sensitive" id="sensitive" name="Qcondition" {% if sensitive %} checked {% endif %} >
+                                <label class="form-check-label" for="sensitive">sensitive</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="insensitive" id="insensitive" name="Qcondition" {% if insensitive %} checked {% endif %} >
+                                <label class="form-check-label" for="insensitive">insensitive</label>
+                            </div>
+                                <!-- <input type="checkbox" id="exactmacth" name="exactmacth" {% if exactmacth %} checked {% endif %}>
+                                <label for="exactmacth"> exact-macth</label><br>
+                                <input type="checkbox" id="ignorespace" name="ignorespace" {% if ignorespace %} checked {% endif %} >
+                                <label for="ignorespace"> ignore-space</label><br>
+                                <input type="checkbox" id="sensitive" name="sensitive" {% if sensitive %} checked {% endif %} >
+                                <label for="sensitive"> sensitive</label><br>
+                                <input type="checkbox" id="insensitive" name="insensitive" {% if insensitive %} checked {% endif %}>
+                                <label for="insensitive"> insensitive</label><br> -->
+                                <!-- <option value="exact-macth" {% if Qcondition == 'exact-macth' %} selected {% endif %}>exact-macth ผลลัพธ์ตรงกันทั้งหมด</option>
+                                <option value="ignore-space" {% if Qcondition == 'ignore-space' %} selected {% endif %}>ignore-space ผลลัพธ์ตรงกันโดยไม่สนใจช่องว่าง</option>
+                                <option value="sensitive" {% if Qcondition == 'sensitive' %} selected {% endif %}>sensitive String ต้องมีตัวพิมพ์ที่ตรงกัน</option>
+                                <option value="insensitive" {% if Qcondition == 'insensitive' %} selected {% endif %}>insensitive ไม่สนใจตัวใหญ่</option> -->
+                            
+                        </div>
+                        <div class="form-inline" style="margin-bottom: 5px;">
+                            <span style="margin-right: 15px;">Control Flow </span>
+                            <input name="Qelement" value="{{ Qelement }}" required></input>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 20px;">
+                        <div class="col-sm-6">
+                            <div class="button-group" style="margin-left: 10px; padding-bottom: 0px; padding-top: 10px;">
+                                {% comment %} <button id="addcode" class="btn btn-info mb-2" type="button">::code</button> {% endcomment %}
+                                <button id="addtest" class="btn btn-info mb-2" type="button">::input</button>
+                                <button id="addoutput" class="btn btn-info mb-2" type="button">::output</button>
+                                
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            
+                        </div>
+                        
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            
+                            <textarea name="source" class="form-control" style="height: 300px" id="textArea">{{ source }}</textarea>
+                        </div>
+
+                        
+                        <div class="col" style="border: #dfdbdb 1px solid; margin:5px; border-radius: 6px">
+                            {% if resultmarkdown %}
+                            <div> {{resultmarkdown |safe}} </div>
+                            {% endif %}
+                            {% if resultinput %}
+                            <div> input: </div>
+                            <div style='color:green; margin:10px; border: 1px;'>{{ resultinput |safe }} </div>
+                            {% endif %}
+                            {% if resultmarkdownbetween %}
+                            <div> {{resultmarkdownbetween |safe}} </div>
+                            {% endif %}
+                            {% if resultoutput %}
+                            <div> output: </div>
+                            <div style='border: 1px dotted; background: #d3dce6;  padding:5px; margin:20px;'>
+                                {{ resultoutput |safe }} </div>
+                            {% endif %}
+                            {% if resultmarkdownlast %}
+                            <div> {{resultmarkdownlast |safe}} </div>
+                            {% endif %}
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    
+                    <button type="submit" class="btn btn-primary text-xs" name="send" id="checkBtn">Preview</button>
+
+
+                    <div class="justify-content-between float-right">
+                        {% comment %} <button type="submit" class="btn btn-info text-xs" name="preview1">Preview1</button>
+                        <button type="submit" class="btn btn-warning text-xs" name="preview2">Preview2</button> {% endcomment %}
+                        <button type="submit" class="btn btn-success text-xs" name="save">Save</button>
+                        <button type="submit" class="btn btn-danger text-xs" name="cancel">Cancel</button>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+{% else %}
+    <h1>&ensp;Welcome to Elab</h1>
+    <h2>&ensp;Please Login or Signup</h2>
+{% endif %}
+
+{% comment %} <div style='border: 1px solid; background: #E4DFDD'>
+
+</div> {% endcomment %}
+
+{% endblock %}
